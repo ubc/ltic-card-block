@@ -16,7 +16,14 @@ return array(
 			'variationType' => array(
 				'type' => 'string',
 				'default' => 'pattern-1'
+			),
+			'isInQueryLoop' => array(
+				'type' => 'boolean',
+				'default' => false
 			)
+		),
+		'usesContext' => array(
+			'queryId'
 		),
 		'textdomain' => 'wp-card-block',
 		'editorScript' => 'file:./index.js',

@@ -13,8 +13,15 @@
     "variationType": {
       "type": "string",
       "default": "pattern-1"
+    },
+    "isInQueryLoop": {
+      "type": "boolean",
+      "default": false
     }
   },
+  "usesContext": [
+    "queryId"
+  ],
   "textdomain": "wp-card-block",
   "editorScript": "file:./index.js",
   "editorStyle": "file:./index.css",

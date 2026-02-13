@@ -69,7 +69,29 @@ export function Placeholder( { clientId, name, setAttributes } ) {
 const populateTemplate = ( targetBlocks, sourceBlockPool ) => {
 	return targetBlocks.map( ( targetBlock ) => {
 		// 1. Try to find a direct match in the pool
-		const matchIndex = sourceBlockPool.findIndex( ( b ) => b.name === targetBlock.name );
+		const matchIndex = sourceBlockPool.findIndex( ( b ) => {
+			if ( b.name === targetBlock.name ) {
+				return true;
+			}
+			// Allow substitutions for Query Loop contexts:
+			// core/image -> core/post-featured-image
+			if ( targetBlock.name === 'core/image' && b.name === 'core/post-featured-image' ) {
+				return true;
+			}
+			// core/heading -> core/post-title
+			if ( targetBlock.name === 'core/heading' && b.name === 'core/post-title' ) {
+				return true;
+			}
+			// core/paragraph -> core/post-excerpt
+			if ( targetBlock.name === 'core/paragraph' && b.name === 'core/post-excerpt' ) {
+				return true;
+			}
+			// core/button -> core/read-more
+			if ( targetBlock.name === 'core/button' && b.name === 'core/read-more' ) {
+				return true;
+			}
+			return false;
+		} );
 
 		if ( matchIndex !== -1 ) {
 			const [ match ] = sourceBlockPool.splice( matchIndex, 1 );
