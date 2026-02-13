@@ -19,6 +19,7 @@ import { store as blockEditorStore } from '@wordpress/block-editor';
 import { createBlock } from '@wordpress/blocks';
 
 import { Placeholder, ColumnsEditContainer } from './components';
+import { QUERY_LOOP_TRANSFORMS } from './constants';
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -58,37 +59,45 @@ export default function Edit( props ) {
 
 			const transformBlocks = ( blocks ) => {
 				return blocks.map( ( block ) => {
-					// 1. Image -> Post Featured Image
-					if ( block.name === 'core/image' ) {
-						hasChanged = true;
-						return createBlock( 'core/post-featured-image', { ...block.attributes } );
-					}
-					
-					// 2. Heading -> Post Title (First one only)
-					if ( block.name === 'core/heading' && ! headingReplaced ) {
-						headingReplaced = true;
-						hasChanged = true;
-						// Post Title defaults to h2, but let's respect the level if possible or default to linking
-						return createBlock( 'core/post-title', { 
-							level: block.attributes.level, 
-							isLink: true 
-						} );
+					// Check if this block has a defined transform
+					const transformTarget = QUERY_LOOP_TRANSFORMS[ block.name ];
+
+					// Special handling for specific blocks to ensure only one of each is replaced per card if needed
+					// For now, we'll replace all matching blocks, or we can add flags like we did before.
+					// The previous logic had flags: headingReplaced, paragraphReplaced.
+					// Let's reimplement that with the map.
+
+					if ( transformTarget ) {
+						// 1. Heading -> Post Title (First one only)
+						if ( block.name === 'core/heading' ) {
+							if ( ! headingReplaced ) {
+								headingReplaced = true;
+								hasChanged = true;
+								return createBlock( transformTarget, { 
+									level: block.attributes.level, 
+									isLink: true 
+								} );
+							}
+						}
+						// 2. Paragraph -> Post Excerpt (First one only)
+						else if ( block.name === 'core/paragraph' ) {
+							if ( ! paragraphReplaced ) {
+								paragraphReplaced = true;
+								hasChanged = true;
+								return createBlock( transformTarget );
+							}
+						}
+						// 3. Others (Image, Button, etc.) - Replace all occurrences
+						else {
+							hasChanged = true;
+							// Pass attributes for Image, but maybe simple createBlock for Button/ReadMore?
+							// For Image -> Featured Image, we might want to keep some attrs (like size slug?), but Featured Image handles its own rendering.
+							// For safely, let's pass attributes.
+							return createBlock( transformTarget, { ...block.attributes } );
+						}
 					}
 
-					// 3. Paragraph -> Post Excerpt (First one only)
-					if ( block.name === 'core/paragraph' && ! paragraphReplaced ) {
-						paragraphReplaced = true;
-						hasChanged = true;
-						return createBlock( 'core/post-excerpt' );
-					}
-
-					// 4. Button -> Read More
-					if ( block.name === 'core/button' ) {
-						hasChanged = true;
-						return createBlock( 'core/read-more' );
-					}
-
-					// 5. Recurse for containers
+					// 4. Recurse for containers
 					if ( block.innerBlocks.length > 0 ) {
 						const newInnerBlocks = transformBlocks( block.innerBlocks );
 						// If children changed, we need to recreate this container to attach new children

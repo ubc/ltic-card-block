@@ -11,6 +11,7 @@ import { useEffect, useRef } from '@wordpress/element';
  * Internal dependencies
  */
 import variations from './variations';
+import { QUERY_LOOP_TRANSFORMS } from './constants';
 
 export function Placeholder( { clientId, name, setAttributes } ) {
 	const { blockType, defaultVariation, variations } = useSelect(
@@ -73,21 +74,8 @@ const populateTemplate = ( targetBlocks, sourceBlockPool ) => {
 			if ( b.name === targetBlock.name ) {
 				return true;
 			}
-			// Allow substitutions for Query Loop contexts:
-			// core/image -> core/post-featured-image
-			if ( targetBlock.name === 'core/image' && b.name === 'core/post-featured-image' ) {
-				return true;
-			}
-			// core/heading -> core/post-title
-			if ( targetBlock.name === 'core/heading' && b.name === 'core/post-title' ) {
-				return true;
-			}
-			// core/paragraph -> core/post-excerpt
-			if ( targetBlock.name === 'core/paragraph' && b.name === 'core/post-excerpt' ) {
-				return true;
-			}
-			// core/button -> core/read-more
-			if ( targetBlock.name === 'core/button' && b.name === 'core/read-more' ) {
+			// Allow substitutions for Query Loop contexts using the shared mapping
+			if ( QUERY_LOOP_TRANSFORMS[ targetBlock.name ] === b.name ) {
 				return true;
 			}
 			return false;
