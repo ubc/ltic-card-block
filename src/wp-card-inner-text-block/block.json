@@ -1,0 +1,24 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ltic/card-inner-text-block",
+	"version": "0.1.0",
+	"title": "Card Inner Text Block",
+	"category": "widgets",
+	"parent": ["ltic/card-block"],
+	"description": "A flexible card inner text block.",
+	"supports": {
+		"html": false
+	},
+	"attributes": {
+		"templateLock": {
+			"type": "string",
+			"enum": [ "all", "insert", "false" ]
+		}
+	},
+	"textdomain": "wp-card-block",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js"
+}

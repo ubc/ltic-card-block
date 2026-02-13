@@ -1,0 +1,23 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "ltic/card-block",
+  "version": "0.1.0",
+  "title": "Card Block",
+  "category": "widgets",
+  "description": "A flexible card block that allows different layouts.",
+  "supports": {
+    "html": false
+  },
+  "attributes": {
+    "variationType": {
+      "type": "string",
+      "default": "pattern-1"
+    }
+  },
+  "textdomain": "wp-card-block",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "viewScript": "file:./view.js"
+}
