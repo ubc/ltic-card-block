@@ -132,7 +132,7 @@ const variations = [
 		],
 		scope: [ 'block', 'transform' ],
 		attributes: {
-			variationType: 'pattern-4'
+			variationType: 'pattern-3'
 		},
 		isActive: ( attributes, variationAttributes ) => attributes.variationType === variationAttributes.variationType
 	}
