@@ -1,1 +1,18 @@
-.wp-block-ltic-card-block ul.block-editor-block-variation-picker__variations .block-editor-block-variation-picker__variation{height:auto!important}.wp-block-ltic-card-block ul.block-editor-block-variation-picker__variations .block-editor-block-variation-picker__variation-label{font-size:1rem;line-height:1.5;max-width:200px;padding:10px;text-align:center}
+/*!******************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/wp-card-block/editor.scss ***!
+  \******************************************************************************************************************************************************************************************************************************************************/
+/**
+ * The following styles get applied inside the editor only.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+.wp-block-ltic-card-block ul.block-editor-block-variation-picker__variations .block-editor-block-variation-picker__variation {
+  height: auto !important;
+}
+.wp-block-ltic-card-block ul.block-editor-block-variation-picker__variations .block-editor-block-variation-picker__variation-label {
+  padding: 10px;
+  max-width: 200px;
+  line-height: 1.5;
+  font-size: 1rem;
+  text-align: center;
+}

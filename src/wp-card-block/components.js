@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { useBlockProps, useInnerBlocksProps, __experimentalBlockVariationPicker, store as blockEditorStore, InspectorControls } from '@wordpress/block-editor';
 import { createBlock, createBlocksFromInnerBlocksTemplate, store as blocksStore } from '@wordpress/blocks';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { useEffect, useRef } from '@wordpress/element';
+import { useEffect } from '@wordpress/element';
 
 /**
  * Internal dependencies

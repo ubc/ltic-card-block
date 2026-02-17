@@ -19,6 +19,21 @@
 			"default": false
 		}
 	},
+	"styles": [
+		{
+			"name": "default",
+			"label": "Default",
+			"isDefault": true
+		},
+		{
+			"name": "cms-card",
+			"label": "CMS Card"
+		},
+		{
+			"name": "ctlt-card",
+			"label": "CTLT Card"
+		}
+	],
 	"usesContext": [ "queryId" ],
 	"textdomain": "wp-card-block",
 	"editorScript": "file:./index.js",

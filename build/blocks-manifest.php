@@ -22,6 +22,21 @@ return array(
 				'default' => false
 			)
 		),
+		'styles' => array(
+			array(
+				'name' => 'default',
+				'label' => 'Default',
+				'isDefault' => true
+			),
+			array(
+				'name' => 'cms-card',
+				'label' => 'CMS Card'
+			),
+			array(
+				'name' => 'ctlt-card',
+				'label' => 'CTLT Card'
+			)
+		),
 		'usesContext' => array(
 			'queryId'
 		),

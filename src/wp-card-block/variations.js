@@ -36,13 +36,18 @@ const variations = [
 			[ 'ltic/card-inner-text-block', {
                 templateLock: 'false',
             }, [
-				[ 'core/heading' ],
-				[ 'core/paragraph' ],
+				[ 'core/heading', {
+					content: 'Card Title'
+				} ],
+				[ 'core/paragraph', {
+					content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+				} ],
 			] ],
-			[ 'core/button', {
-                backgroundColor: 'accent-3', // theme color slug
-                text: 'Read More',
-            } ],
+			[ 'core/buttons', {}, [
+				[ 'core/button', {
+					text: 'Read More',
+				} ],
+			] ],
 		],
 		isDefault: true,
 		scope: [ 'block', 'transform' ],
@@ -75,8 +80,12 @@ const variations = [
 			[ 'ltic/card-inner-text-block', {
                 templateLock: 'false',
             }, [
-				[ 'core/heading' ],
-				[ 'core/paragraph' ],
+				[ 'core/heading', {
+					content: 'Card Title'
+				} ],
+				[ 'core/paragraph', {
+					content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+				} ],
 			] ]
 		],
 		scope: [ 'block', 'transform' ],
