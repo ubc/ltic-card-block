@@ -37,12 +37,12 @@
 	--card-button-hover-border-style: solid;
 	--card-button-hover-border-radius: 0;
 
-	&.is-style-cms-card {
+	&.is-style-style-2 {
 		--card-background-color: #e6e6e666;
 		--card-border-radius: 0;
 	}
 
-	&.is-style-ctlt-card {
+	&.is-style-style-3 {
 		--card-border-radius: 20px;
 		--card-border-color: #ababab;
 
@@ -103,7 +103,7 @@
 		}
 	}
 
-	&.is-style-cms-card {
+	&.is-style-style-2 {
 		&:has(> :is(.wp-block-buttons, .wp-block-read-more)) {
 			> .wp-block-ltic-card-inner-text-block {
 				margin-bottom: var(--card-padding-vertical);
@@ -112,7 +112,7 @@
 		}
 	}
 
-	&.is-style-ctlt-card {
+	&.is-style-style-3 {
 		border-left: var(--card-border-width) var(--card-border-style) var(--card-border-color);
 		border-right: var(--card-border-width) var(--card-border-style) var(--card-border-color);
 		overflow: hidden;

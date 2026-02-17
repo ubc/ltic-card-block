@@ -29,12 +29,12 @@ return array(
 				'isDefault' => true
 			),
 			array(
-				'name' => 'cms-card',
-				'label' => 'CMS Card'
+				'name' => 'style-2',
+				'label' => 'Style 2'
 			),
 			array(
-				'name' => 'ctlt-card',
-				'label' => 'CTLT Card'
+				'name' => 'style-3',
+				'label' => 'Style 3'
 			)
 		),
 		'usesContext' => array(
