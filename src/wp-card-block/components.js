@@ -107,7 +107,7 @@ const populateTemplate = ( targetBlocks, sourceBlockPool ) => {
 	} );
 };
 
-export function ColumnsEditContainer( { attributes, setAttributes, clientId } ) {
+export function EditContainer( { attributes, setAttributes, clientId } ) {
 	const { variationType } = attributes;
 	const { replaceInnerBlocks } = useDispatch( blockEditorStore );
 	const innerBlocks = useSelect( select => select( blockEditorStore ).getBlocks( clientId ), [ clientId ] );

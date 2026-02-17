@@ -18,7 +18,7 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import { store as blockEditorStore } from '@wordpress/block-editor';
 import { createBlock } from '@wordpress/blocks';
 
-import { Placeholder, ColumnsEditContainer } from './components';
+import { Placeholder, EditContainer } from './components';
 import { QUERY_LOOP_TRANSFORMS } from './constants';
 
 /**
@@ -127,7 +127,7 @@ export default function Edit( props ) {
 	}, [ isInQueryLoop, innerBlocks, clientId, replaceInnerBlocks ] );
 
 	const hasInnerBlocks = innerBlocks.length > 0;
-	const Component = hasInnerBlocks ? ColumnsEditContainer : Placeholder;
+	const Component = hasInnerBlocks ? EditContainer : Placeholder;
 
 	return <Component { ...props } />;
 }
