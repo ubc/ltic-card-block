@@ -57,6 +57,10 @@
 	background-color: var(--card-background-color);
 	border: var(--card-border-width) var(--card-border-style) var(--card-border-color);
 
+	p:empty {
+		display: none;
+	}
+
 	> :is(.wp-block-image, .wp-block-post-featured-image) {
 		margin-bottom: 0;
 
