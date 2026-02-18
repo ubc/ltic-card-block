@@ -52,7 +52,7 @@ const variations = [
 		isDefault: true,
 		scope: [ 'block', 'transform' ],
 		attributes: {
-			variationType: 'pattern-1'
+			variationType: 'card-1'
 		},
 		isActive: ( attributes, variationAttributes ) => attributes.variationType === variationAttributes.variationType
 	},
@@ -90,7 +90,7 @@ const variations = [
 		],
 		scope: [ 'block', 'transform' ],
 		attributes: {
-			variationType: 'pattern-2'
+			variationType: 'card-2'
 		},
 			isActive: ( attributes, variationAttributes ) => attributes.variationType === variationAttributes.variationType
 	},
@@ -132,7 +132,42 @@ const variations = [
 		],
 		scope: [ 'block', 'transform' ],
 		attributes: {
-			variationType: 'pattern-3'
+			variationType: 'card-3'
+		},
+		isActive: ( attributes, variationAttributes ) => attributes.variationType === variationAttributes.variationType
+	},
+	{
+		name: 'card-4',
+		title: __( 'A card block that includes a text content section only' ),
+		description: __( 'A card block that includes a text content section only' ),
+		icon: (
+			<SVG
+				xmlns="http://www.w3.org/2000/svg"
+				width="200"
+				height="200"
+				viewBox="0 0 200 200"
+				style={ { width: '200px', height: '200px' } }
+			>
+				<Rect x="36" y="20" width="128" height="160" rx="8" stroke="currentColor" fill="none" strokeWidth="6" />
+				<Rect x="52" y="128" width="80" height="12" fill="currentColor" />
+			</SVG>
+		),
+		isDefault: false,
+		innerBlocks: [
+			[ 'ltic/card-inner-text-block', {
+				templateLock: 'false',
+			}, [
+				[ 'core/heading', {
+					content: 'Card Title'
+				} ],
+				[ 'core/paragraph', {
+					content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+				} ],
+			] ],
+		],
+		scope: [ 'block', 'transform' ],
+		attributes: {
+			variationType: 'card-4'
 		},
 		isActive: ( attributes, variationAttributes ) => attributes.variationType === variationAttributes.variationType
 	}

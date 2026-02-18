@@ -2,16 +2,18 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, useInnerBlocksProps, __experimentalBlockVariationPicker, store as blockEditorStore, InspectorControls } from '@wordpress/block-editor';
+import { useBlockProps, useInnerBlocksProps, __experimentalBlockVariationPicker, store as blockEditorStore, BlockControls, __experimentalLinkControl, InspectorControls } from '@wordpress/block-editor';
 import { createBlock, createBlocksFromInnerBlocksTemplate, store as blocksStore } from '@wordpress/blocks';
 import { useSelect, useDispatch } from '@wordpress/data';
-import { useEffect } from '@wordpress/element';
+import { useEffect, useState, useRef } from '@wordpress/element';	
+import { Toolbar, ToolbarButton, Popover, PanelBody, Notice } from '@wordpress/components';
+import { link } from '@wordpress/icons';
 
 /**
  * Internal dependencies
  */
 import variations from './variations';
-import { QUERY_LOOP_TRANSFORMS } from './constants';
+import { QUERY_LOOP_TRANSFORMS, LINK_VARIATION_TRANSFORM } from './constants';
 
 export function Placeholder( { clientId, name, setAttributes } ) {
 	const { blockType, defaultVariation, variations } = useSelect(
@@ -108,10 +110,16 @@ const populateTemplate = ( targetBlocks, sourceBlockPool ) => {
 };
 
 export function EditContainer( { attributes, setAttributes, clientId } ) {
-	const { variationType } = attributes;
+	const { variationType, url, linkTarget, rel } = attributes;
 	const { replaceInnerBlocks } = useDispatch( blockEditorStore );
 	const innerBlocks = useSelect( select => select( blockEditorStore ).getBlocks( clientId ), [ clientId ] );
 	
+	const [ isLinkOpen, setIsLinkOpen ] = useState( false );
+	const openLinkControl = () => setIsLinkOpen( true );
+	const closeLinkControl = () => setIsLinkOpen( false );
+
+	const linkControlRef = useRef();
+
 	useEffect( () => {
 		const targetVariation = variations.find( ( v ) => v.attributes.variationType === variationType );
 		
@@ -147,11 +155,77 @@ export function EditContainer( { attributes, setAttributes, clientId } ) {
 		templateLock: 'all',
 	} );
 
+    const onLinkChange = ( value ) => {
+        const newUrl = value.url;
+        const newOpensInNewTab = value.opensInNewTab;
+        
+        let newRel = rel;
+        if ( newOpensInNewTab ) {
+            newRel = newRel ? newRel + ' noopener noreferrer' : 'noopener noreferrer';
+        } else {
+             newRel = newRel ? newRel.replace( /noopener|noreferrer/g, '' ).trim() : '';
+        }
+
+        const newAttributes = {
+            url: newUrl,
+            linkTarget: newOpensInNewTab ? '_blank' : '',
+            rel: newRel
+        };
+
+        // Auto-transform logic
+        if ( newUrl ) {
+             // Since variationType is now the same as the name, we can look it up directly
+             if ( LINK_VARIATION_TRANSFORM[ variationType ] ) {
+                 const targetVariationName = LINK_VARIATION_TRANSFORM[ variationType ];
+                 // We can simply set the new variationType directly
+                 newAttributes.variationType = targetVariationName;
+             }
+        }
+
+        setAttributes( newAttributes );
+    };
+
+    const linkControl = isLinkOpen && (
+        <Popover
+            position="bottom center"
+            onClose={ closeLinkControl }
+            anchorRef={ linkControlRef.current }
+        >
+            <__experimentalLinkControl
+                value={ { url, opensInNewTab: linkTarget === '_blank' } }
+                onChange={ onLinkChange }
+                onRemove={ () => {
+                    setAttributes( { url: undefined, linkTarget: undefined, rel: undefined } );
+                    closeLinkControl();
+                } }
+            />
+        </Popover>
+    );
+
+    const showLinkError = LINK_VARIATION_TRANSFORM[ variationType ] && url;
+
 	return (
 		<>
-			<InspectorControls>
-			</InspectorControls>
 			<div { ...innerBlocksProps } />
+			<BlockControls	>
+				<ToolbarButton 
+                    icon={ link } 
+                    label="Link" 
+                    onClick={ openLinkControl }
+                    isActive={ isLinkOpen || !! url }
+                    ref={ linkControlRef }
+                />
+			</BlockControls>
+            { linkControl }
+            { showLinkError && (
+                <InspectorControls>
+                    <PanelBody title={ __( 'Link Settings', 'wp-card-block' ) }>
+                        <Notice status="error" isDismissible={ false }>
+                            { __( 'Setting the whole card as a link won\'t work for this variation because it contains a button, which is an HTML violation. The link functionality will be ignored until you switch to a different pattern that doesn\'t have a button block.', 'wp-card-block' ) }
+                        </Notice>
+                    </PanelBody>
+                </InspectorControls>
+            ) }
 		</>
 	);
 }

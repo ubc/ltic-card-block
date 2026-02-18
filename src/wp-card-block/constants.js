@@ -9,3 +9,8 @@ export const QUERY_LOOP_TRANSFORMS = {
 	'core/paragraph': 'core/post-excerpt',
 	'core/button': 'core/read-more',
 };
+
+export const LINK_VARIATION_TRANSFORM = {
+	'card-1': 'card-2',
+	'card-3': 'card-4',
+}

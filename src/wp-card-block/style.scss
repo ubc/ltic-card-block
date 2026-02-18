@@ -56,9 +56,15 @@
  .wp-block-ltic-card-block {
 	background-color: var(--card-background-color);
 	border: var(--card-border-width) var(--card-border-style) var(--card-border-color);
+	display: block;
+	text-decoration: auto;
 
-	p:empty {
-		display: none;
+	p {
+		color: black;
+
+		&:empty {
+			display: none;
+		}
 	}
 
 	> :is(.wp-block-image, .wp-block-post-featured-image) {

@@ -15,11 +15,22 @@ return array(
 		'attributes' => array(
 			'variationType' => array(
 				'type' => 'string',
-				'default' => 'pattern-1'
+				'default' => 'card-1'
 			),
 			'isInQueryLoop' => array(
 				'type' => 'boolean',
 				'default' => false
+			),
+			'url' => array(
+				'type' => 'string'
+			),
+			'linkTarget' => array(
+				'type' => 'string',
+				'default' => ''
+			),
+			'rel' => array(
+				'type' => 'string',
+				'default' => ''
 			)
 		),
 		'styles' => array(
