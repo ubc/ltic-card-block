@@ -6,7 +6,7 @@ import { useBlockProps, useInnerBlocksProps, __experimentalBlockVariationPicker,
 import { createBlock, createBlocksFromInnerBlocksTemplate, store as blocksStore } from '@wordpress/blocks';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useEffect, useState, useRef } from '@wordpress/element';	
-import { Toolbar, ToolbarButton, Popover, PanelBody, Notice, Modal, Button } from '@wordpress/components';
+import { Toolbar, ToolbarButton, Popover, PanelBody, Notice, Modal, Button, ToggleControl } from '@wordpress/components';
 import { link } from '@wordpress/icons';
 
 /**
@@ -110,7 +110,7 @@ const populateTemplate = ( targetBlocks, sourceBlockPool ) => {
 };
 
 export function EditContainer( { attributes, setAttributes, clientId } ) {
-	const { variationType, url, linkTarget, rel } = attributes;
+	const { variationType, url, linkTarget, rel, linkEnabled, isInQueryLoop } = attributes;
 	const { replaceInnerBlocks } = useDispatch( blockEditorStore );
 	const innerBlocks = useSelect( select => select( blockEditorStore ).getBlocks( clientId ), [ clientId ] );
 	
@@ -227,7 +227,8 @@ export function EditContainer( { attributes, setAttributes, clientId } ) {
         const newAttributes = {
             url: newUrl,
             linkTarget: newOpensInNewTab ? '_blank' : '',
-            rel: newRel
+            rel: newRel,
+			linkEnabled: true,
         };
 
         // Auto-transform logic interception
@@ -262,14 +263,33 @@ export function EditContainer( { attributes, setAttributes, clientId } ) {
             onClose={ closeLinkControl }
             anchorRef={ linkControlRef.current }
         >
-            <__experimentalLinkControl
-                value={ { url, opensInNewTab: linkTarget === '_blank' } }
-                onChange={ onLinkChange }
-                onRemove={ () => {
-                    setAttributes( { url: undefined, linkTarget: undefined, rel: undefined } );
-                    closeLinkControl();
-                } }
-            />
+            { ! isInQueryLoop && (
+                <__experimentalLinkControl
+                    value={ { url, opensInNewTab: linkTarget === '_blank' } }
+                    onChange={ onLinkChange }
+                    onRemove={ () => {
+                        setAttributes( { url: undefined, linkTarget: undefined, rel: undefined, linkEnabled: false } );
+                        closeLinkControl();
+                    } }
+                />
+            ) }
+
+			{ isInQueryLoop && (
+				<div style={ { padding: '16px 30px', marginTop: '12px' } }>
+					<ToggleControl
+						label="Link"
+						checked={ linkEnabled }
+						onChange={ ( value ) => {
+							setAttributes( {
+								linkEnabled: value,
+								url: value ? '#' : undefined,
+								linkTarget: value ? '' : undefined,
+								rel: value ? '' : undefined,
+							} );
+						} }
+					/>
+				</div>
+			) }
         </Popover>
     );
 
@@ -281,7 +301,7 @@ export function EditContainer( { attributes, setAttributes, clientId } ) {
                     icon={ link } 
                     label="Link" 
                     onClick={ openLinkControl }
-                    isActive={ isLinkOpen || !! url }
+                    isActive={ linkEnabled }
                     ref={ linkControlRef }
                 />
 			</BlockControls>

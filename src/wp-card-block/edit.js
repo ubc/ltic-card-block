@@ -32,7 +32,7 @@ import { QUERY_LOOP_TRANSFORMS } from './constants';
 export default function Edit( props ) {
 
 	const { clientId, attributes, setAttributes, context } = props;
-	const { isInQueryLoop } = attributes;
+	const { isInQueryLoop, linkEnabled } = attributes;
 	
 	const innerBlocks = useSelect( select => select( blockEditorStore ).getBlocks( clientId ), [ clientId ] );
 	const { replaceInnerBlocks } = useDispatch( blockEditorStore );
@@ -67,7 +67,7 @@ export default function Edit( props ) {
 					// The previous logic had flags: headingReplaced, paragraphReplaced.
 					// Let's reimplement that with the map.
 
-					if ( transformTarget ) {
+						if ( transformTarget ) {
 						// 1. Heading -> Post Title (First one only)
 						if ( block.name === 'core/heading' ) {
 							if ( ! headingReplaced ) {
@@ -75,7 +75,7 @@ export default function Edit( props ) {
 								hasChanged = true;
 								return createBlock( transformTarget, { 
 									level: block.attributes.level, 
-									isLink: true 
+									isLink: ! linkEnabled // Only link if parent link is disabled
 								} );
 							}
 						}
@@ -90,12 +90,30 @@ export default function Edit( props ) {
 						// 3. Others (Image, Button, etc.) - Replace all occurrences
 						else {
 							hasChanged = true;
-							// Pass attributes for Image, but maybe simple createBlock for Button/ReadMore?
-							// For Image -> Featured Image, we might want to keep some attrs (like size slug?), but Featured Image handles its own rendering.
-							// For safely, let's pass attributes.
-							return createBlock( transformTarget, { ...block.attributes } );
+							// Pass attributes for Image
+							const newAttributes = { ...block.attributes };
+							if ( transformTarget === 'core/post-featured-image' ) {
+								newAttributes.isLink = ! linkEnabled;
+							}
+							return createBlock( transformTarget, newAttributes );
 						}
 					}
+                    
+                    // Handle ALREADY transformed blocks if linkEnabled changes
+                    if ( block.name === 'core/post-title' ) {
+                        // Check if isLink matches the desired state (!linkEnabled)
+                        // Note: linkEnabled true -> isLink should be false
+                        if ( block.attributes.isLink === linkEnabled ) {
+                             hasChanged = true;
+                             return createBlock( block.name, { ...block.attributes, isLink: ! linkEnabled }, block.innerBlocks );
+                        }
+                    }
+                    if ( block.name === 'core/post-featured-image' ) {
+                        if ( block.attributes.isLink === linkEnabled ) {
+                             hasChanged = true;
+                             return createBlock( block.name, { ...block.attributes, isLink: ! linkEnabled }, block.innerBlocks );
+                        }
+                    }
 
 					// 4. Recurse for containers
 					if ( block.innerBlocks.length > 0 ) {
@@ -124,7 +142,7 @@ export default function Edit( props ) {
 				replaceInnerBlocks( clientId, newBlocks, false );
 			}
 		}
-	}, [ isInQueryLoop, innerBlocks, clientId, replaceInnerBlocks ] );
+	}, [ isInQueryLoop, innerBlocks, clientId, replaceInnerBlocks, linkEnabled ] );
 
 	const hasInnerBlocks = innerBlocks.length > 0;
 	const Component = hasInnerBlocks ? EditContainer : Placeholder;

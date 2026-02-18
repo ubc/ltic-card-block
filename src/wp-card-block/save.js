@@ -16,7 +16,7 @@ import { LINK_VARIATION_TRANSFORM } from './constants';
  */
 
 export default function save( { attributes } ) {
-    const { url, linkTarget, rel, variationType } = attributes;
+    const { url, linkTarget, rel, variationType, isInQueryLoop, linkEnabled } = attributes;
 	const blockProps = useBlockProps.save();
 
     // If the current variation is a key in LINK_VARIATION_TRANSFORM, it means
@@ -24,17 +24,30 @@ export default function save( { attributes } ) {
     // These variations (card-1, card-3) contain buttons, so we should NOT wrap them in an <a> tag.
     const isRestrictedVariation = LINK_VARIATION_TRANSFORM.hasOwnProperty( variationType );
 
-	if ( url && ! isRestrictedVariation ) {
-		return (
-			<a 
-				href={ url } 
-				target={ linkTarget } 
-				rel={ rel } 
-				{ ...blockProps }
-			>
-				<InnerBlocks.Content />
-			</a>
-		);
+	if ( ! isRestrictedVariation && linkEnabled ) {
+		if ( isInQueryLoop ) {
+			return (
+				<a 
+					href='#' 
+					{ ...blockProps }
+				>
+					<InnerBlocks.Content />
+				</a>
+			);
+		}
+
+		if ( ! isInQueryLoop ) {
+			return (
+				<a 
+					href={ url } 
+					target={ linkTarget } 
+					rel={ rel } 
+					{ ...blockProps }
+				>
+					<InnerBlocks.Content />
+				</a>
+			);
+		}
 	}
 
 	return (

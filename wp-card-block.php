@@ -43,3 +43,42 @@ function ltic_card_block_enqueue_editor_assets() {
 	);
 }
 add_action( 'enqueue_block_editor_assets', 'ltic_card_block_enqueue_editor_assets' );
+
+/**
+ * Render block hook to inject dynamic link functionality for Card Block in Query Loops.
+ *
+ * @param string $block_content The block content.
+ * @param array  $block         The block data.
+ * @return string Modified block content.
+ */
+function ltic_card_block_render_callback( $block_content, $block ) {
+	if ( 'ltic/card-block' !== $block['blockName'] ) {
+		return $block_content;
+	}
+
+	// Check if isInQueryLoop and linkEnabled are true.
+	$is_in_query_loop = isset( $block['attrs']['isInQueryLoop'] ) && $block['attrs']['isInQueryLoop'];
+	$link_enabled     = isset( $block['attrs']['linkEnabled'] ) && $block['attrs']['linkEnabled'];
+
+	if ( $is_in_query_loop && $link_enabled ) {
+		// We are in a query loop and link is enabled.
+		// The block should have been rendered with an <a> tag by save.js (if not restricted).
+		// We need to replace the href with the current post permalink.
+		// Note: In a Query Loop, the global $post object is set to the current post in the loop.
+		
+		$permalink = get_permalink();
+
+		if ( ! $permalink ) {
+			return $block_content;
+		}
+
+		$tags = new WP_HTML_Tag_Processor( $block_content );
+		if ( $tags->next_tag( 'a' ) ) {
+			$tags->set_attribute( 'href', $permalink );
+			return $tags->get_updated_html();
+		}
+	}
+
+	return $block_content;
+}
+add_filter( 'render_block', 'ltic_card_block_render_callback', 10, 2 );

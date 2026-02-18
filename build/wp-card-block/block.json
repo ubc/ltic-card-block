@@ -18,6 +18,10 @@
       "type": "boolean",
       "default": false
     },
+    "linkEnabled": {
+      "type": "boolean",
+      "default": false
+    },
     "url": {
       "type": "string"
     },
@@ -45,12 +49,12 @@
       "label": "Style 3"
     }
   ],
-  "usesContext": [
-    "queryId"
-  ],
   "textdomain": "wp-card-block",
   "editorScript": "file:./index.js",
   "editorStyle": "file:./index.css",
   "style": "file:./style-index.css",
-  "viewScript": "file:./view.js"
+  "viewScript": "file:./view.js",
+  "usesContext": [
+    "queryId"
+  ]
 }

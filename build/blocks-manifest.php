@@ -21,6 +21,10 @@ return array(
 				'type' => 'boolean',
 				'default' => false
 			),
+			'linkEnabled' => array(
+				'type' => 'boolean',
+				'default' => false
+			),
 			'url' => array(
 				'type' => 'string'
 			),
@@ -48,14 +52,14 @@ return array(
 				'label' => 'Style 3'
 			)
 		),
-		'usesContext' => array(
-			'queryId'
-		),
 		'textdomain' => 'wp-card-block',
 		'editorScript' => 'file:./index.js',
 		'editorStyle' => 'file:./index.css',
 		'style' => 'file:./style-index.css',
-		'viewScript' => 'file:./view.js'
+		'viewScript' => 'file:./view.js',
+		'usesContext' => array(
+			'queryId'
+		)
 	),
 	'wp-card-inner-text-block' => array(
 		'$schema' => 'https://schemas.wp.org/trunk/block.json',
