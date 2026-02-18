@@ -138,7 +138,6 @@ export default function Edit( props ) {
 			const newBlocks = transformBlocks( innerBlocks );
 
 			if ( hasChanged ) {
-				console.log( 'Auto-transforming blocks for Query Loop context...' );
 				replaceInnerBlocks( clientId, newBlocks, false );
 			}
 		}

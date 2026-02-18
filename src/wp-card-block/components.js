@@ -109,7 +109,7 @@ const populateTemplate = ( targetBlocks, sourceBlockPool ) => {
 	} );
 };
 
-export function EditContainer( { attributes, setAttributes, clientId } ) {
+export function EditContainer( { attributes, setAttributes, clientId, isSelected } ) {
 	const { variationType, url, linkTarget, rel, linkEnabled, isInQueryLoop } = attributes;
 	const { replaceInnerBlocks } = useDispatch( blockEditorStore );
 	const innerBlocks = useSelect( select => select( blockEditorStore ).getBlocks( clientId ), [ clientId ] );
@@ -193,14 +193,20 @@ export function EditContainer( { attributes, setAttributes, clientId } ) {
             return;
         }
 
-        if ( LINK_VARIATION_TRANSFORM[ variationType ] && url ) {
+        // Only the selected block should handle the UI for confirmation
+        // This prevents all instances in a Query Loop from firing modals simultaneously
+        if ( ! isSelected ) {
+            return;
+        }
+
+        if ( LINK_VARIATION_TRANSFORM[ variationType ] && linkEnabled ) {
              setVariationToRevert( prevVariationType );
              setShowConfirmationModal( true );
         }
-    }, [ variationType, url, prevVariationType ] );
+    }, [ variationType, linkEnabled, prevVariationType, isSelected ] );
 
     const onConfirmRemoval = () => {
-        setAttributes( { url: undefined, linkTarget: undefined, rel: undefined } );
+        setAttributes( { url: undefined, linkTarget: undefined, rel: undefined, linkEnabled: false } );
         setShowConfirmationModal( false );
         setVariationToRevert( null );
     };
@@ -228,7 +234,7 @@ export function EditContainer( { attributes, setAttributes, clientId } ) {
             url: newUrl,
             linkTarget: newOpensInNewTab ? '_blank' : '',
             rel: newRel,
-			linkEnabled: true,
+			linkEnabled: true
         };
 
         // Auto-transform logic interception
@@ -243,6 +249,27 @@ export function EditContainer( { attributes, setAttributes, clientId } ) {
 
         setAttributes( newAttributes );
     };
+
+	const onToggleChange = ( value ) => {
+		const newAttributes = {
+			url: '#',
+			linkTarget: '',
+			rel: '',
+			linkEnabled: ! linkEnabled
+		};
+
+		// Auto-transform logic interception
+		if ( ! linkEnabled && LINK_VARIATION_TRANSFORM[ variationType ] ) {
+			const targetVariationName = LINK_VARIATION_TRANSFORM[ variationType ];
+			newAttributes.variationType = targetVariationName;
+			
+			setPendingAttributes( newAttributes );
+			setShowTransformModal( true );
+			return; 
+		}
+
+        setAttributes( newAttributes );
+	};
 
     const onConfirmTransform = () => {
         if ( pendingAttributes ) {
@@ -277,16 +304,9 @@ export function EditContainer( { attributes, setAttributes, clientId } ) {
 			{ isInQueryLoop && (
 				<div style={ { padding: '16px 30px', marginTop: '12px' } }>
 					<ToggleControl
-						label="Link"
+						label="Enable Link"
 						checked={ linkEnabled }
-						onChange={ ( value ) => {
-							setAttributes( {
-								linkEnabled: value,
-								url: value ? '#' : undefined,
-								linkTarget: value ? '' : undefined,
-								rel: value ? '' : undefined,
-							} );
-						} }
+						onChange={ onToggleChange }
 					/>
 				</div>
 			) }

@@ -7,7 +7,7 @@ export const QUERY_LOOP_TRANSFORMS = {
 	'core/image': 'core/post-featured-image',
 	'core/heading': 'core/post-title',
 	'core/paragraph': 'core/post-excerpt',
-	'core/button': 'core/read-more',
+	'core/buttons': 'core/read-more',
 };
 
 export const LINK_VARIATION_TRANSFORM = {

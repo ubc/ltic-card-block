@@ -37,16 +37,16 @@ export default function save( { attributes } ) {
 		}
 
 		if ( ! isInQueryLoop ) {
-			return (
-				<a 
-					href={ url } 
-					target={ linkTarget } 
-					rel={ rel } 
+		return (
+			<a 
+				href={ url } 
+				target={ linkTarget } 
+				rel={ rel } 
 					{ ...blockProps }
-				>
-					<InnerBlocks.Content />
-				</a>
-			);
+			>
+				<InnerBlocks.Content />
+			</a>
+		);
 		}
 	}
 
