@@ -292,7 +292,7 @@ export function EditContainer( { attributes, setAttributes, clientId } ) {
                     onRequestClose={ onCancelRemoval }
                 >
                     <p>
-                        { __( 'The "Whole Card as Link" feature does not support variations that include buttons, as this causes invalid HTML. By confirming, the existing link will be removed from the card. Do you want to proceed?', 'wp-card-block' ) }
+                        { __( 'The "Whole Card as Link" feature does not support variations that include buttons, as this causes HTML violation. By confirming, the existing link on the card will be removed. Do you want to proceed?', 'wp-card-block' ) }
                     </p>
                     <div style={ { display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px' } }>
                         <Button variant="secondary" onClick={ onCancelRemoval }>
@@ -310,7 +310,7 @@ export function EditContainer( { attributes, setAttributes, clientId } ) {
                     onRequestClose={ onCancelTransform }
                 >
                     <p>
-                        { __( 'Adding a link to this card requires changing the layout to remove the button, as buttons cannot be inside links. The layout will switch to a version without buttons. Do you want to proceed?', 'wp-card-block' ) }
+                        { __( 'Enabling the "Whole Card as Link" feature requires switch to a variation that does not include buttons, as this will cause HTML violation. Do you want to proceed?', 'wp-card-block' ) }
                     </p>
                     <div style={ { display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px' } }>
                         <Button variant="secondary" onClick={ onCancelTransform }>
