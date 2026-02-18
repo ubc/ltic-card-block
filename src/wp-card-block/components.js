@@ -6,7 +6,7 @@ import { useBlockProps, useInnerBlocksProps, __experimentalBlockVariationPicker,
 import { createBlock, createBlocksFromInnerBlocksTemplate, store as blocksStore } from '@wordpress/blocks';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useEffect, useState, useRef } from '@wordpress/element';	
-import { Toolbar, ToolbarButton, Popover, PanelBody, Notice } from '@wordpress/components';
+import { Toolbar, ToolbarButton, Popover, PanelBody, Notice, Modal, Button } from '@wordpress/components';
 import { link } from '@wordpress/icons';
 
 /**
@@ -132,10 +132,25 @@ export function EditContainer( { attributes, setAttributes, clientId } ) {
 			
 			const newInnerBlocks = populateTemplate( templateBlocks, sourceBlockPool );
 
+            // Default image logic
+            // Check if there is an image block in the new variation's innerBlocks
+            const imageBlock = newInnerBlocks.find( block => block.name === 'core/image' );
+            
+            if ( imageBlock && ! imageBlock.attributes.url && ! imageBlock.attributes.id ) {
+                // Check if lticCardBlockData is available
+                if ( typeof window.lticCardBlockData !== 'undefined' && window.lticCardBlockData.defaultImageUrl ) {
+                    imageBlock.attributes.url = window.lticCardBlockData.defaultImageUrl;
+                    imageBlock.attributes.alt = __( 'Default Image', 'wp-card-block' );
+                }
+            }
+
 			// Check if we need to update to avoid loop
 			// Compare by block names to avoid unnecessary updates/loops
-			const currentSignature = innerBlocks.map( ( b ) => b.name ).join( '|' );
-			const newSignature = newInnerBlocks.map( ( b ) => b.name ).join( '|' );
+			// Also need to compare attributes now since we might have changed them (image url)
+            // But checking deep equality is expensive. 
+            // Simple check: same block names?
+			const currentSignature = innerBlocks.map( ( b ) => b.name + (b.name === 'core/image' ? b.attributes.url : '') ).join( '|' );
+			const newSignature = newInnerBlocks.map( ( b ) => b.name + (b.name === 'core/image' ? b.attributes.url : '') ).join( '|' );
 
 			if ( currentSignature !== newSignature ) {
 				replaceInnerBlocks( clientId, newInnerBlocks, false );
@@ -155,10 +170,53 @@ export function EditContainer( { attributes, setAttributes, clientId } ) {
 		templateLock: 'all',
 	} );
 
+
+
+    // Track previous variation to allow reverting
+    const prevVariationTypeCallback = useRef( variationType );
+    useEffect( () => {
+        prevVariationTypeCallback.current = variationType;
+    }, [ variationType ] );
+    const prevVariationType = prevVariationTypeCallback.current;
+
+    const [ showConfirmationModal, setShowConfirmationModal ] = useState( false );
+    const [ variationToRevert, setVariationToRevert ] = useState( null );
+    
+    // State for auto-transform confirmation
+    const [ showTransformModal, setShowTransformModal ] = useState( false );
+    const [ pendingAttributes, setPendingAttributes ] = useState( null );
+
+    // Check for conflict: Restricted variation + URL present
+    useEffect( () => {
+        // Only run if variation has changed to avoid running on initial load
+        if ( variationType === prevVariationType ) {
+            return;
+        }
+
+        if ( LINK_VARIATION_TRANSFORM[ variationType ] && url ) {
+             setVariationToRevert( prevVariationType );
+             setShowConfirmationModal( true );
+        }
+    }, [ variationType, url, prevVariationType ] );
+
+    const onConfirmRemoval = () => {
+        setAttributes( { url: undefined, linkTarget: undefined, rel: undefined } );
+        setShowConfirmationModal( false );
+        setVariationToRevert( null );
+    };
+
+    const onCancelRemoval = () => {
+        if ( variationToRevert ) {
+            setAttributes( { variationType: variationToRevert } );
+        }
+        setShowConfirmationModal( false );
+        setVariationToRevert( null );
+    };
+
     const onLinkChange = ( value ) => {
         const newUrl = value.url;
         const newOpensInNewTab = value.opensInNewTab;
-        
+
         let newRel = rel;
         if ( newOpensInNewTab ) {
             newRel = newRel ? newRel + ' noopener noreferrer' : 'noopener noreferrer';
@@ -172,17 +230,30 @@ export function EditContainer( { attributes, setAttributes, clientId } ) {
             rel: newRel
         };
 
-        // Auto-transform logic
-        if ( newUrl ) {
-             // Since variationType is now the same as the name, we can look it up directly
-             if ( LINK_VARIATION_TRANSFORM[ variationType ] ) {
-                 const targetVariationName = LINK_VARIATION_TRANSFORM[ variationType ];
-                 // We can simply set the new variationType directly
-                 newAttributes.variationType = targetVariationName;
-             }
+        // Auto-transform logic interception
+        if ( newUrl && LINK_VARIATION_TRANSFORM[ variationType ] ) {
+             const targetVariationName = LINK_VARIATION_TRANSFORM[ variationType ];
+             newAttributes.variationType = targetVariationName;
+             
+             setPendingAttributes( newAttributes );
+             setShowTransformModal( true );
+             return; 
         }
 
         setAttributes( newAttributes );
+    };
+
+    const onConfirmTransform = () => {
+        if ( pendingAttributes ) {
+            setAttributes( pendingAttributes );
+        }
+        setShowTransformModal( false );
+        setPendingAttributes( null );
+    };
+
+    const onCancelTransform = () => {
+        setShowTransformModal( false );
+        setPendingAttributes( null );
     };
 
     const linkControl = isLinkOpen && (
@@ -202,8 +273,6 @@ export function EditContainer( { attributes, setAttributes, clientId } ) {
         </Popover>
     );
 
-    const showLinkError = LINK_VARIATION_TRANSFORM[ variationType ] && url;
-
 	return (
 		<>
 			<div { ...innerBlocksProps } />
@@ -217,14 +286,41 @@ export function EditContainer( { attributes, setAttributes, clientId } ) {
                 />
 			</BlockControls>
             { linkControl }
-            { showLinkError && (
-                <InspectorControls>
-                    <PanelBody title={ __( 'Link Settings', 'wp-card-block' ) }>
-                        <Notice status="error" isDismissible={ false }>
-                            { __( 'Setting the whole card as a link won\'t work for this variation because it contains a button, which is an HTML violation. The link functionality will be ignored until you switch to a different pattern that doesn\'t have a button block.', 'wp-card-block' ) }
-                        </Notice>
-                    </PanelBody>
-                </InspectorControls>
+            { showConfirmationModal && (
+                <Modal
+                    title={ __( 'Remove Link?', 'wp-card-block' ) }
+                    onRequestClose={ onCancelRemoval }
+                >
+                    <p>
+                        { __( 'The "Whole Card as Link" feature does not support variations that include buttons, as this causes invalid HTML. By confirming, the existing link will be removed from the card. Do you want to proceed?', 'wp-card-block' ) }
+                    </p>
+                    <div style={ { display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px' } }>
+                        <Button variant="secondary" onClick={ onCancelRemoval }>
+                            { __( 'Cancel', 'wp-card-block' ) }
+                        </Button>
+                        <Button variant="primary" onClick={ onConfirmRemoval }>
+                            { __( 'Proceed', 'wp-card-block' ) }
+                        </Button>
+                    </div>
+                </Modal>
+            ) }
+            { showTransformModal && (
+                <Modal
+                    title={ __( 'Layout Change Required', 'wp-card-block' ) }
+                    onRequestClose={ onCancelTransform }
+                >
+                    <p>
+                        { __( 'Adding a link to this card requires changing the layout to remove the button, as buttons cannot be inside links. The layout will switch to a version without buttons. Do you want to proceed?', 'wp-card-block' ) }
+                    </p>
+                    <div style={ { display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px' } }>
+                        <Button variant="secondary" onClick={ onCancelTransform }>
+                            { __( 'Cancel', 'wp-card-block' ) }
+                        </Button>
+                        <Button variant="primary" onClick={ onConfirmTransform }>
+                            { __( 'Proceed', 'wp-card-block' ) }
+                        </Button>
+                    </div>
+                </Modal>
             ) }
 		</>
 	);

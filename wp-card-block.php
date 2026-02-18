@@ -28,3 +28,18 @@ function ltic_card_block_registration() {
 	wp_register_block_types_from_metadata_collection( __DIR__ . '/build', __DIR__ . '/build/blocks-manifest.php' );
 }
 add_action( 'init', 'ltic_card_block_registration' );
+
+/**
+ * Enqueue block editor assets
+ */
+function ltic_card_block_enqueue_editor_assets() {
+	$default_image_url = plugins_url( 'default-image.png', __FILE__ );
+	wp_localize_script(
+		'ltic-card-block-editor-script',
+		'lticCardBlockData',
+		array(
+			'defaultImageUrl' => $default_image_url,
+		)
+	);
+}
+add_action( 'enqueue_block_editor_assets', 'ltic_card_block_enqueue_editor_assets' );
