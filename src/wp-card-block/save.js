@@ -16,38 +16,24 @@ import { LINK_VARIATION_TRANSFORM } from './constants';
  */
 
 export default function save( { attributes } ) {
-    const { url, linkTarget, rel, variationType, isInQueryLoop, linkEnabled } = attributes;
+    const { variationType, linkEnabled } = attributes;
 	const blockProps = useBlockProps.save();
 
     // If the current variation is a key in LINK_VARIATION_TRANSFORM, it means
-    // it's a variation that *should* transform to something else (e.g. card-1 -> card-2).
-    // These variations (card-1, card-3) contain buttons, so we should NOT wrap them in an <a> tag.
+    // it's a variation that *should* transform to something else (e.g. card-2 -> card-1).
+    // These variations (card-2, card-4) do NOT contain buttons. Thus, they are restricted
+    // from being full-card links, and will NOT be wrapped in an <a> tag or have the linked data attribute.
     const isRestrictedVariation = LINK_VARIATION_TRANSFORM.hasOwnProperty( variationType );
 
 	if ( ! isRestrictedVariation && linkEnabled ) {
-		if ( isInQueryLoop ) {
-			return (
-				<a 
-					href='#' 
-					{ ...blockProps }
-				>
-					<InnerBlocks.Content />
-				</a>
-			);
-		}
-
-		if ( ! isInQueryLoop ) {
 		return (
-			<a 
-				href={ url } 
-				target={ linkTarget } 
-				rel={ rel } 
-					{ ...blockProps }
+			<div 
+				{ ...blockProps }
+				data-linked="true"
 			>
 				<InnerBlocks.Content />
-			</a>
+			</div>
 		);
-		}
 	}
 
 	return (

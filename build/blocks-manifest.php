@@ -24,17 +24,6 @@ return array(
 			'linkEnabled' => array(
 				'type' => 'boolean',
 				'default' => false
-			),
-			'url' => array(
-				'type' => 'string'
-			),
-			'linkTarget' => array(
-				'type' => 'string',
-				'default' => ''
-			),
-			'rel' => array(
-				'type' => 'string',
-				'default' => ''
 			)
 		),
 		'styles' => array(

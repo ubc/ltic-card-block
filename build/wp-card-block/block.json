@@ -21,17 +21,6 @@
     "linkEnabled": {
       "type": "boolean",
       "default": false
-    },
-    "url": {
-      "type": "string"
-    },
-    "linkTarget": {
-      "type": "string",
-      "default": ""
-    },
-    "rel": {
-      "type": "string",
-      "default": ""
     }
   },
   "styles": [

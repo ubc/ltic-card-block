@@ -11,6 +11,6 @@ export const QUERY_LOOP_TRANSFORMS = {
 };
 
 export const LINK_VARIATION_TRANSFORM = {
-	'card-1': 'card-2',
-	'card-3': 'card-4',
+	'card-2': 'card-1',
+	'card-4': 'card-3',
 }

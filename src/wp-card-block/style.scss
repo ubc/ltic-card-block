@@ -59,6 +59,17 @@
 	display: block;
 	text-decoration: auto;
 
+	&[data-linked="true"] {
+		position: relative;
+
+		:is(.wp-block-buttons .wp-block-button__link, .wp-block-read-more)::after {
+			content: "";
+			position: absolute;
+			inset: 0;
+			z-index: 10;
+		}
+	}
+
 	p {
 		color: black;
 

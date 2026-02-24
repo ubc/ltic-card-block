@@ -6,7 +6,7 @@ import { useBlockProps, useInnerBlocksProps, __experimentalBlockVariationPicker,
 import { createBlock, createBlocksFromInnerBlocksTemplate, store as blocksStore } from '@wordpress/blocks';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useEffect, useState, useRef } from '@wordpress/element';	
-import { Toolbar, ToolbarButton, Popover, PanelBody, Notice, Modal, Button, ToggleControl } from '@wordpress/components';
+import { Toolbar, ToolbarButton, PanelBody, Notice, Modal, Button, ToggleControl } from '@wordpress/components';
 import { link } from '@wordpress/icons';
 
 /**
@@ -110,15 +110,9 @@ const populateTemplate = ( targetBlocks, sourceBlockPool ) => {
 };
 
 export function EditContainer( { attributes, setAttributes, clientId, isSelected } ) {
-	const { variationType, url, linkTarget, rel, linkEnabled, isInQueryLoop } = attributes;
+	const { variationType, linkEnabled, isInQueryLoop } = attributes;
 	const { replaceInnerBlocks } = useDispatch( blockEditorStore );
 	const innerBlocks = useSelect( select => select( blockEditorStore ).getBlocks( clientId ), [ clientId ] );
-	
-	const [ isLinkOpen, setIsLinkOpen ] = useState( false );
-	const openLinkControl = () => setIsLinkOpen( true );
-	const closeLinkControl = () => setIsLinkOpen( false );
-
-	const linkControlRef = useRef();
 
 	useEffect( () => {
 		const targetVariation = variations.find( ( v ) => v.attributes.variationType === variationType );
@@ -162,6 +156,7 @@ export function EditContainer( { attributes, setAttributes, clientId, isSelected
 
 	const blockProps = useBlockProps( {
 		className: classes,
+        'data-linked': linkEnabled ? 'true' : undefined
 	} );
 	const innerBlocksProps = useInnerBlocksProps( blockProps, {
 		directInsert: true,
@@ -206,7 +201,7 @@ export function EditContainer( { attributes, setAttributes, clientId, isSelected
     }, [ variationType, linkEnabled, prevVariationType, isSelected ] );
 
     const onConfirmRemoval = () => {
-        setAttributes( { url: undefined, linkTarget: undefined, rel: undefined, linkEnabled: false } );
+        setAttributes( { linkEnabled: false } );
         setShowConfirmationModal( false );
         setVariationToRevert( null );
     };
@@ -219,42 +214,8 @@ export function EditContainer( { attributes, setAttributes, clientId, isSelected
         setVariationToRevert( null );
     };
 
-    const onLinkChange = ( value ) => {
-        const newUrl = value.url;
-        const newOpensInNewTab = value.opensInNewTab;
-
-        let newRel = rel;
-        if ( newOpensInNewTab ) {
-            newRel = newRel ? newRel + ' noopener noreferrer' : 'noopener noreferrer';
-        } else {
-             newRel = newRel ? newRel.replace( /noopener|noreferrer/g, '' ).trim() : '';
-        }
-
-        const newAttributes = {
-            url: newUrl,
-            linkTarget: newOpensInNewTab ? '_blank' : '',
-            rel: newRel,
-			linkEnabled: true
-        };
-
-        // Auto-transform logic interception
-        if ( newUrl && LINK_VARIATION_TRANSFORM[ variationType ] ) {
-             const targetVariationName = LINK_VARIATION_TRANSFORM[ variationType ];
-             newAttributes.variationType = targetVariationName;
-             
-             setPendingAttributes( newAttributes );
-             setShowTransformModal( true );
-             return; 
-        }
-
-        setAttributes( newAttributes );
-    };
-
-	const onToggleChange = ( value ) => {
+	const onToggleChange = () => {
 		const newAttributes = {
-			url: '#',
-			linkTarget: '',
-			rel: '',
 			linkEnabled: ! linkEnabled
 		};
 
@@ -284,34 +245,7 @@ export function EditContainer( { attributes, setAttributes, clientId, isSelected
         setPendingAttributes( null );
     };
 
-    const linkControl = isLinkOpen && (
-        <Popover
-            position="bottom center"
-            onClose={ closeLinkControl }
-            anchorRef={ linkControlRef.current }
-        >
-            { ! isInQueryLoop && (
-                <__experimentalLinkControl
-                    value={ { url, opensInNewTab: linkTarget === '_blank' } }
-                    onChange={ onLinkChange }
-                    onRemove={ () => {
-                        setAttributes( { url: undefined, linkTarget: undefined, rel: undefined, linkEnabled: false } );
-                        closeLinkControl();
-                    } }
-                />
-            ) }
 
-			{ isInQueryLoop && (
-				<div style={ { padding: '16px 30px', marginTop: '12px' } }>
-					<ToggleControl
-						label="Enable Link"
-						checked={ linkEnabled }
-						onChange={ onToggleChange }
-					/>
-				</div>
-			) }
-        </Popover>
-    );
 
 	return (
 		<>
@@ -319,20 +253,18 @@ export function EditContainer( { attributes, setAttributes, clientId, isSelected
 			<BlockControls	>
 				<ToolbarButton 
                     icon={ link } 
-                    label="Link" 
-                    onClick={ openLinkControl }
+                    label={ linkEnabled ? __( 'Disable Entire Card as Link' ) : __( 'Enable Entire Card as Link' ) } 
+                    onClick={ onToggleChange }
                     isActive={ linkEnabled }
-                    ref={ linkControlRef }
                 />
 			</BlockControls>
-            { linkControl }
             { showConfirmationModal && (
                 <Modal
                     title={ __( 'Remove Link?', 'wp-card-block' ) }
                     onRequestClose={ onCancelRemoval }
                 >
                     <p>
-                        { __( 'The "Whole Card as Link" feature does not support variations that include buttons, as this causes HTML violation. By confirming, the existing link on the card will be removed. Do you want to proceed?', 'wp-card-block' ) }
+                        { __( 'The "Entire Card as Link" feature requires your card to have a visible button to provide a clear call-to-action for users. You are switching to a layout without a button. By confirming, the existing link on the card will be removed. Do you want to proceed?', 'wp-card-block' ) }
                     </p>
                     <div style={ { display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px' } }>
                         <Button variant="secondary" onClick={ onCancelRemoval }>
@@ -350,7 +282,7 @@ export function EditContainer( { attributes, setAttributes, clientId, isSelected
                     onRequestClose={ onCancelTransform }
                 >
                     <p>
-                        { __( 'Enabling the "Whole Card as Link" feature requires switch to a variation that does not include buttons, as this will cause HTML violation. Do you want to proceed?', 'wp-card-block' ) }
+                        { __( 'To provide a clear, accessible call-to-action for users, the "Entire Card as Link" feature requires a visible button on the card. Enabling this feature will automatically switch your card to a layout that includes a button. Do you want to proceed?', 'wp-card-block' ) }
                     </p>
                     <div style={ { display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px' } }>
                         <Button variant="secondary" onClick={ onCancelTransform }>
