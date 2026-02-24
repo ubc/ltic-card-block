@@ -120,7 +120,7 @@ export function EditContainer( { attributes, setAttributes, clientId, isSelected
 		};
 	}, [ clientId ] );
 	
-	const isInsideEqualHeightContainer = parentBlockName === 'core/column' || parentBlockName === 'core/post-template';
+	const isInsideEqualHeightContainer = parentBlockName === 'core/column' || parentBlockName === 'core/post-template' || parentBlockName === 'core/group';
 
 	useEffect( () => {
 		const targetVariation = variations.find( ( v ) => v.attributes.variationType === variationType );
@@ -269,7 +269,7 @@ export function EditContainer( { attributes, setAttributes, clientId, isSelected
 						checked={ isEqualHeight }
 						onChange={ ( value ) => setAttributes( { isEqualHeight: value } ) }
 						disabled={ ! isInsideEqualHeightContainer }
-						help={ ! isInsideEqualHeightContainer ? __( 'Only available when inside a Column or Post Template block.', 'wp-card-block' ) : undefined }
+						help={ ! isInsideEqualHeightContainer ? __( 'Only available when inside a Column, Post Template, or Group block.', 'wp-card-block' ) : undefined }
 					/>
 				</PanelBody>
 			</InspectorControls>

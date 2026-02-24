@@ -158,3 +158,10 @@
 		}
 	}
  }
+
+ // Additional CSS to handle Same Height feature for Post Template or Group block grids.
+ :is(.wp-block-post-template.is-layout-grid, .wp-block-group.is-layout-grid):has(.wp-block-ltic-card-block.is-equal-height) {
+	grid-auto-rows: 1fr;		
+ }
+	
+ 
