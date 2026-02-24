@@ -59,6 +59,20 @@
 	display: block;
 	text-decoration: auto;
 
+	&.is-equal-height {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+
+		> .wp-block-ltic-card-inner-text-block {
+			flex-grow: 1;
+		}
+
+		> :is(.wp-block-buttons, .wp-block-read-more) {
+			margin-top: auto;
+		}
+	}
+
 	&[data-linked="true"] {
 		position: relative;
 

@@ -16,8 +16,10 @@ import { LINK_VARIATION_TRANSFORM } from './constants';
  */
 
 export default function save( { attributes } ) {
-    const { variationType, linkEnabled } = attributes;
-	const blockProps = useBlockProps.save();
+    const { variationType, linkEnabled, isEqualHeight } = attributes;
+	const blockProps = useBlockProps.save( {
+		className: isEqualHeight ? 'is-equal-height' : undefined
+	} );
 
     // If the current variation is a key in LINK_VARIATION_TRANSFORM, it means
     // it's a variation that *should* transform to something else (e.g. card-2 -> card-1).

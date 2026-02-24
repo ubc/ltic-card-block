@@ -7,7 +7,6 @@ import { createBlock, createBlocksFromInnerBlocksTemplate, store as blocksStore 
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useEffect, useState, useRef } from '@wordpress/element';	
 import { Toolbar, ToolbarButton, PanelBody, Notice, Modal, Button, ToggleControl } from '@wordpress/components';
-import { link } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -110,9 +109,18 @@ const populateTemplate = ( targetBlocks, sourceBlockPool ) => {
 };
 
 export function EditContainer( { attributes, setAttributes, clientId, isSelected } ) {
-	const { variationType, linkEnabled, isInQueryLoop } = attributes;
+	const { variationType, linkEnabled, isInQueryLoop, isEqualHeight } = attributes;
 	const { replaceInnerBlocks } = useDispatch( blockEditorStore );
-	const innerBlocks = useSelect( select => select( blockEditorStore ).getBlocks( clientId ), [ clientId ] );
+	const { innerBlocks, parentBlockName } = useSelect( select => {
+		const { getBlocks, getBlockName, getBlockRootClientId } = select( blockEditorStore );
+		const rootClientId = getBlockRootClientId( clientId );
+		return {
+			innerBlocks: getBlocks( clientId ),
+			parentBlockName: getBlockName( rootClientId )
+		};
+	}, [ clientId ] );
+	
+	const isInsideEqualHeightContainer = parentBlockName === 'core/column' || parentBlockName === 'core/post-template';
 
 	useEffect( () => {
 		const targetVariation = variations.find( ( v ) => v.attributes.variationType === variationType );
@@ -152,7 +160,7 @@ export function EditContainer( { attributes, setAttributes, clientId, isSelected
 		}
 	}, [ variationType, clientId, innerBlocks, replaceInnerBlocks ] );
 
-	const classes = '';
+	const classes = isEqualHeight ? 'is-equal-height' : '';
 
 	const blockProps = useBlockProps( {
 		className: classes,
@@ -249,15 +257,23 @@ export function EditContainer( { attributes, setAttributes, clientId, isSelected
 
 	return (
 		<>
+			<InspectorControls>
+				<PanelBody title={ __( 'Card Settings', 'wp-card-block' ) }>
+					<ToggleControl
+						label={ __( 'Entire Card as Link', 'wp-card-block' ) }
+						checked={ linkEnabled }
+						onChange={ onToggleChange }
+					/>
+					<ToggleControl
+						label={ __( 'Equal Height', 'wp-card-block' ) }
+						checked={ isEqualHeight }
+						onChange={ ( value ) => setAttributes( { isEqualHeight: value } ) }
+						disabled={ ! isInsideEqualHeightContainer }
+						help={ ! isInsideEqualHeightContainer ? __( 'Only available when inside a Column or Post Template block.', 'wp-card-block' ) : undefined }
+					/>
+				</PanelBody>
+			</InspectorControls>
 			<div { ...innerBlocksProps } />
-			<BlockControls	>
-				<ToolbarButton 
-                    icon={ link } 
-                    label={ linkEnabled ? __( 'Disable Entire Card as Link' ) : __( 'Enable Entire Card as Link' ) } 
-                    onClick={ onToggleChange }
-                    isActive={ linkEnabled }
-                />
-			</BlockControls>
             { showConfirmationModal && (
                 <Modal
                     title={ __( 'Remove Link?', 'wp-card-block' ) }

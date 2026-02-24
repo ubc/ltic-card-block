@@ -24,6 +24,10 @@ return array(
 			'linkEnabled' => array(
 				'type' => 'boolean',
 				'default' => false
+			),
+			'isEqualHeight' => array(
+				'type' => 'boolean',
+				'default' => false
 			)
 		),
 		'styles' => array(

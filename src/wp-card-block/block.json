@@ -21,6 +21,10 @@
 		"linkEnabled": {
 			"type": "boolean",
 			"default": false
+		},
+		"isEqualHeight": {
+			"type": "boolean",
+			"default": false
 		}
 	},
 	"styles": [
