@@ -59,7 +59,7 @@ return array(
 		'apiVersion' => 3,
 		'name' => 'ltic/card-inner-text-block',
 		'version' => '0.1.0',
-		'title' => 'Card Inner Text Block',
+		'title' => 'Text',
 		'category' => 'widgets',
 		'parent' => array(
 			'ltic/card-block'
