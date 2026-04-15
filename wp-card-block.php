@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       WP Card Block
  * Description:       LTIC implementation of WP Card Block.
- * Version:           0.1.1
+ * Version:           0.1.2
  * Requires at least: 6.8
  * Requires PHP:      7.4
  * Author:            LTIC WordPress

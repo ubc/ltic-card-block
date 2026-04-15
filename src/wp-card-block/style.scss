@@ -10,30 +10,34 @@
 	--card-padding-horizontal: 2em;
 	--card-background-color: #fff;
 
-	--card-border-width: 1px;
+	/* 1px */
+	--card-border-width: 0.0625rem;
 	--card-border-style: solid;
 	--card-border-color: #ccc;
-
+	
 	--card-image-border-radius: 0;
-
+	
+	/* 16px */
 	--card-button-font-size: 1rem;
 	--card-button-font-weight: 400;
 	--card-button-line-height: 1.2;
-
+	
 	--card-button-padding-vertical: .8em;
 	--card-button-padding-horizontal: 1.7em;
-
+	
 	--card-button-background-color: #002145;
 	--card-button-text-color: white;
 	--card-button-border-color: #002145;
-	--card-button-border-width: 1px;
+	/* 1px */
+	--card-button-border-width: 0.0625rem;
 	--card-button-border-style: solid;
 	--card-button-border-radius: 0;
 
 	--card-button-hover-background-color: #0055b7;
 	--card-button-hover-text-color: white;
 	--card-button-hover-border-color: #0055b7;
-	--card-button-hover-border-width: 1px;
+	/* 1px */
+	--card-button-hover-border-width: 0.0625rem;
 	--card-button-hover-border-style: solid;
 	--card-button-hover-border-radius: 0;
 
@@ -43,17 +47,23 @@
 	}
 
 	&.is-style-style-3 {
-		--card-border-radius: 20px;
+		/* 20px */
+		--card-border-radius: 1.25rem;
 		--card-border-color: #ababab;
 
-		--card-image-height: 150px;
+		/* 150px */
+		--card-image-height: 9.375rem;
 
-		--card-button-border-radius: 10px;
-		--card-button-hover-border-radius: 10px;
+		/* 10px */
+		--card-button-border-radius: 0.625rem;
+		/* 10px */
+		--card-button-hover-border-radius: 0.625rem;
 	}
  }
 
  .wp-block-ltic-card-block {
+	/* Create a new stacking context (i.e. scope `z-index` to just the card) */
+	isolation: isolate;
 	box-sizing: border-box;
 	background-color: var(--card-background-color);
 	border: var(--card-border-width) var(--card-border-style) var(--card-border-color);
@@ -81,7 +91,6 @@
 			content: "";
 			position: absolute;
 			inset: 0;
-			z-index: 10;
 		}
 	}
 
@@ -148,7 +157,8 @@
 		border-left: var(--card-border-width) var(--card-border-style) var(--card-border-color);
 		border-right: var(--card-border-width) var(--card-border-style) var(--card-border-color);
 		overflow: hidden;
-		box-shadow: 0.5rem 0.5625rem 1.3125rem 0 rgba(0, 0, 0, 0.15);
+		/* 8px 9px 21px */
+		box-shadow: 0.5rem 0.5625rem 1.3125rem 0 rgb(0 0 0 / 0.15);
 		border-radius: var(--card-border-radius);
 
 		> :is(.wp-block-image, .wp-block-post-featured-image) {
@@ -164,5 +174,3 @@
  :is(.wp-block-post-template.is-layout-grid, .wp-block-group.is-layout-grid):has(.wp-block-ltic-card-block.is-equal-height) {
 	grid-auto-rows: 1fr;		
  }
-	
- 
