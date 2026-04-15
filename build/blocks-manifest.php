@@ -6,7 +6,7 @@ return array(
 		'apiVersion' => 3,
 		'name' => 'ltic/card-block',
 		'version' => '0.1.0',
-		'title' => 'Card Block',
+		'title' => 'Card',
 		'category' => 'widgets',
 		'description' => 'A flexible card block that allows different layouts.',
 		'supports' => array(
