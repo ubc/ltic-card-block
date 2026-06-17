@@ -34,16 +34,40 @@ import { InnerBlocks } from '@wordpress/block-editor';
  *
  * @return {Element} Element to render.
  */
-export default function Edit( { attributes } ) {
+export default function Edit({ attributes }) {
 	const blockProps = useBlockProps();
 	const { templateLock } = attributes;
-	const allowedBlocks = [ 'core/heading', 'core/paragraph', 'core/list' ];
+	const allowedBlocks = [
+		'core/heading',
+		'core/paragraph',
+		'core/list',
+		'core/accordion',
+		'core/categories',
+		'core/columns',
+		'core/details',
+		'core/group',
+		'core/math',
+		'core/post-author-biography',
+		'core/post-author-name',
+		'core/post-author',
+		'core/post-content',
+		'core/post-date',
+		'core/post-excerpt',
+		'core/post-terms',
+		'core/post-time-to-read',
+		'core/post-title',
+		'core/preformatted',
+		'core/pullquote',
+		'core/quote',
+		'core/tabs',
+		'ubc/custom-field-block'
+	];
 
 	return (
-		<div { ...blockProps }>
+		<div {...blockProps}>
 			<InnerBlocks
-				allowedBlocks={ allowedBlocks }
-				templateLock={ templateLock === 'false' ? false : templateLock }
+				allowedBlocks={allowedBlocks}
+				templateLock={templateLock === 'false' ? false : templateLock}
 			/>
 		</div>
 	);
