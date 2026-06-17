@@ -14,8 +14,8 @@ import { __ } from '@wordpress/i18n';
 const variations = [
 	{
 		name: 'card-1',
-		title: __( 'A card block that includes an image, a text content section and a button' ),
-		description: __( 'A card block that includes an image, a text content section and a button' ),
+		title: __( 'Card (Image, Text, and Button)' ),
+		description: __( 'A Card block that includes an image, a text content section and a button' ),
 		icon: (
 			<SVG
 				xmlns="http://www.w3.org/2000/svg"
@@ -58,8 +58,8 @@ const variations = [
 	},
 	{
 		name: 'card-2',
-		title: __( 'A card block that includes an image and a text content section' ),
-		description: __( 'A card block that includes an image and a text content section' ),
+		title: __( 'Card (Image and Text - No Button)' ),
+		description: __( 'A Card block that includes an image and a text content section' ),
 		icon: (
 			<SVG
 				xmlns="http://www.w3.org/2000/svg"
@@ -96,8 +96,8 @@ const variations = [
 	},
 	{
 		name: 'card-3',
-		title: __( 'A card block that includes a text content section and a button' ),
-		description: __( 'A card block that includes a text content section and a button' ),
+		title: __( 'Card (Text and Button - No Image)' ),
+		description: __( 'A Card block that includes a text content section and a button' ),
 		icon: (
 			<SVG
 				xmlns="http://www.w3.org/2000/svg"
@@ -138,8 +138,8 @@ const variations = [
 	},
 	{
 		name: 'card-4',
-		title: __( 'A card block that includes a text content section only' ),
-		description: __( 'A card block that includes a text content section only' ),
+		title: __( 'Card (Text Only - No Image or Button)' ),
+		description: __( 'A Card block that includes a text content section only' ),
 		icon: (
 			<SVG
 				xmlns="http://www.w3.org/2000/svg"

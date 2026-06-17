@@ -20,7 +20,7 @@ import './style.scss';
 import Edit from './edit';
 import save from './save';
 import metadata from './block.json';
-import { media } from '@wordpress/icons';
+import { group } from '@wordpress/icons';
 
 /**
  * Every block starts by registering a new block type definition.
@@ -28,7 +28,7 @@ import { media } from '@wordpress/icons';
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-registration/
  */
 registerBlockType( metadata.name, {
-	icon: media,
+	icon: group,
 	/**
 	 * @see ./edit.js
 	 */

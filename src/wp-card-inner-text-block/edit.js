@@ -41,9 +41,7 @@ export default function Edit({ attributes }) {
 		'core/heading',
 		'core/paragraph',
 		'core/list',
-		'core/accordion',
 		'core/categories',
-		'core/columns',
 		'core/details',
 		'core/group',
 		'core/math',
@@ -59,7 +57,6 @@ export default function Edit({ attributes }) {
 		'core/preformatted',
 		'core/pullquote',
 		'core/quote',
-		'core/tabs',
 		'ubc/custom-field-block'
 	];
 
