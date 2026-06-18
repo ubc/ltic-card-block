@@ -5,15 +5,24 @@
 	"version": "0.1.0",
 	"title": "Text",
 	"category": "widgets",
-	"parent": ["ltic/card-block"],
+	"parent": [
+		"ltic/card-block"
+	],
 	"description": "A flexible card inner text block.",
 	"supports": {
-		"html": false
+		"html": false,
+		"interactivity": {
+			"clientNavigation": true
+		}
 	},
 	"attributes": {
 		"templateLock": {
 			"type": "string",
-			"enum": [ "all", "insert", "false" ]
+			"enum": [
+				"all",
+				"insert",
+				"false"
+			]
 		}
 	},
 	"textdomain": "wp-card-block",

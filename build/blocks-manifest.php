@@ -10,7 +10,10 @@ return array(
 		'category' => 'widgets',
 		'description' => 'A flexible card block that allows different layouts.',
 		'supports' => array(
-			'html' => false
+			'html' => false,
+			'interactivity' => array(
+				'clientNavigation' => true
+			)
 		),
 		'attributes' => array(
 			'variationType' => array(
@@ -66,7 +69,10 @@ return array(
 		),
 		'description' => 'A flexible card inner text block.',
 		'supports' => array(
-			'html' => false
+			'html' => false,
+			'interactivity' => array(
+				'clientNavigation' => true
+			)
 		),
 		'attributes' => array(
 			'templateLock' => array(

@@ -10,7 +10,10 @@
   ],
   "description": "A flexible card inner text block.",
   "supports": {
-    "html": false
+    "html": false,
+    "interactivity": {
+      "clientNavigation": true
+    }
   },
   "attributes": {
     "templateLock": {

@@ -7,7 +7,10 @@
 	"category": "widgets",
 	"description": "A flexible card block that allows different layouts.",
 	"supports": {
-		"html": false
+		"html": false,
+		"interactivity": {
+			"clientNavigation": true
+		}
 	},
 	"attributes": {
 		"variationType": {
@@ -47,5 +50,7 @@
 	"editorStyle": "file:./index.css",
 	"style": "file:./style-index.css",
 	"viewScript": "file:./view.js",
-	"usesContext": [ "queryId" ]
+	"usesContext": [
+		"queryId"
+	]
 }
