@@ -108,8 +108,9 @@ const populateTemplate = ( targetBlocks, sourceBlockPool ) => {
 	} );
 };
 
-export function EditContainer( { attributes, setAttributes, clientId, isSelected } ) {
+export function EditContainer( { attributes, setAttributes, clientId, isSelected, context } ) {
 	const { variationType, linkEnabled, isInQueryLoop, isEqualHeight } = attributes;
+	const isInsideQueryLoop = Number.isFinite( context?.queryId );
 	const { replaceInnerBlocks } = useDispatch( blockEditorStore );
 	const { innerBlocks, parentBlockName } = useSelect( select => {
 		const { getBlocks, getBlockName, getBlockRootClientId } = select( blockEditorStore );
@@ -134,11 +135,13 @@ export function EditContainer( { attributes, setAttributes, clientId, isSelected
 			
 			const newInnerBlocks = populateTemplate( templateBlocks, sourceBlockPool );
 
-            // Default image logic
-            // Check if there is an image block in the new variation's innerBlocks
+            // Default image logic — only outside a Query Loop. Inside a loop the
+            // core/image placeholder is converted to a dynamic Featured Image, so a
+            // placeholder URL is meaningless; injecting one here also changes the
+            // block signature and fights the static->dynamic conversion effect.
             const imageBlock = newInnerBlocks.find( block => block.name === 'core/image' );
-            
-            if ( imageBlock && ! imageBlock.attributes.url && ! imageBlock.attributes.id ) {
+
+            if ( ! isInsideQueryLoop && imageBlock && ! imageBlock.attributes.url && ! imageBlock.attributes.id ) {
                 // Check if lticCardBlockData is available
                 if ( typeof window.lticCardBlockData !== 'undefined' && window.lticCardBlockData.defaultImageUrl ) {
                     imageBlock.attributes.url = window.lticCardBlockData.defaultImageUrl;
@@ -158,7 +161,7 @@ export function EditContainer( { attributes, setAttributes, clientId, isSelected
 				replaceInnerBlocks( clientId, newInnerBlocks, false );
 			}
 		}
-	}, [ variationType, clientId, innerBlocks, replaceInnerBlocks ] );
+	}, [ variationType, clientId, innerBlocks, replaceInnerBlocks, isInsideQueryLoop ] );
 
 	const classes = isEqualHeight ? 'is-equal-height' : '';
 

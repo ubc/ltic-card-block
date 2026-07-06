@@ -20,6 +20,10 @@ return array(
 				'type' => 'string',
 				'default' => 'card-1'
 			),
+			'transformedVariation' => array(
+				'type' => 'string',
+				'default' => ''
+			),
 			'isInQueryLoop' => array(
 				'type' => 'boolean',
 				'default' => false

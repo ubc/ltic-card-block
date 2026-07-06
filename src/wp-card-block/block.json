@@ -17,6 +17,10 @@
 			"type": "string",
 			"default": "card-1"
 		},
+		"transformedVariation": {
+			"type": "string",
+			"default": ""
+		},
 		"isInQueryLoop": {
 			"type": "boolean",
 			"default": false
