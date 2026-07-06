@@ -57,7 +57,8 @@ export default function Edit({ attributes }) {
 		'core/preformatted',
 		'core/pullquote',
 		'core/quote',
-		'ubc/custom-field-block'
+		'ubc/custom-field-block',
+		'ubc/subcategory-block'
 	];
 
 	return (
