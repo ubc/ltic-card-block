@@ -58,7 +58,8 @@ export default function Edit({ attributes }) {
 		'core/pullquote',
 		'core/quote',
 		'ubc/custom-field-block',
-		'ubc/subcategory-block'
+		'ubc/subcategory-block',
+		'core/spacer'
 	];
 
 	return (
